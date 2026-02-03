@@ -1,4 +1,4 @@
-# � Netflix For Desktop
+# Netflix For Desktop
 
 An unofficial desktop application for Netflix with Discord Rich Presence integration and hardware-accelerated video playback.
 
