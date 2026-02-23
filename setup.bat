@@ -44,15 +44,11 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
-:: Find the folder containing manifest.json (may be nested)
-set "FOUND="
-for /r "%EXTRACT_DIR%" %%f in (manifest.json) do (
-    if not defined FOUND (
-        set "FOUND=%%~dpf"
-    )
-)
-
-if not defined FOUND (
+:: Find manifest.json inside extracted folder and copy to UBlock
+if exist "UBlock" rmdir /s /q "UBlock"
+powershell -Command "$manifest = Get-ChildItem -Path '%EXTRACT_DIR%' -Filter 'manifest.json' -Recurse | Select-Object -First 1; if ($manifest) { $src = $manifest.DirectoryName; Copy-Item -Path $src -Destination 'UBlock' -Recurse -Force; Write-Host 'Copied to UBlock folder.' } else { Write-Host 'ERROR: manifest.json not found.' -ForegroundColor Red; exit 1 }"
+if %ERRORLEVEL% neq 0 (
+    echo.
     echo ERROR: Could not find manifest.json in the downloaded archive.
     echo The download may be corrupted. Please try again.
     rmdir /s /q "%EXTRACT_DIR%" 2>nul
@@ -60,10 +56,6 @@ if not defined FOUND (
     pause
     exit /b 1
 )
-
-:: Move to UBlock folder
-if exist "UBlock" rmdir /s /q "UBlock"
-xcopy "%FOUND%*" "UBlock\" /s /e /q /y >nul
 
 :: Clean up temp files
 rmdir /s /q "%EXTRACT_DIR%" 2>nul
