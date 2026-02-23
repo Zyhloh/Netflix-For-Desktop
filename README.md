@@ -1,6 +1,6 @@
 # Netflix For Desktop
 
-An unofficial desktop application for Netflix with Discord Rich Presence integration and hardware-accelerated video playback.
+An unofficial desktop application for Netflix with built-in ad blocking, Discord Rich Presence integration, and hardware-accelerated video playback.
 
 ![Netflix For Desktop](https://img.shields.io/badge/Platform-Windows-blue?style=for-the-badge)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple?style=for-the-badge)
@@ -8,6 +8,7 @@ An unofficial desktop application for Netflix with Discord Rich Presence integra
 
 ## ✨ Features
 
+- **Built-in Ad Blocker** - uBlock Origin integrated natively, blocks ads during playback with zero setup
 - **Native Netflix Experience** - Direct embedding of Netflix web interface
 - **Discord Rich Presence** - Show what you're watching on Discord
 - **Hardware Acceleration** - Smooth video playback with GPU acceleration
@@ -18,11 +19,11 @@ An unofficial desktop application for Netflix with Discord Rich Presence integra
 
 ### Option 1: Download Pre-built Installer (Recommended)
 1. Go to [Releases](https://github.com/zyhloh/netflix-for-desktop/releases)
-2. Download `NetflixForDesktop_Setup_2.0.0.exe`
+2. Download `NetflixForDesktop_v2.0.0_Setup.exe`
 3. Run the installer
 4. Launch from Start Menu or Desktop shortcut
 
-> **Note:** The packaged installer includes WebView2 runtime, so no additional dependencies are required.
+> **Note:** The installer includes uBlock Origin for ad blocking out of the box. .NET 8.0 Desktop Runtime and WebView2 are required.
 
 ### Option 2: Build from Source
 
@@ -38,9 +39,9 @@ An unofficial desktop application for Netflix with Discord Rich Presence integra
    cd netflix-for-desktop
    ```
 
-2. Navigate to the project directory:
+2. Run the setup script to download uBlock Origin:
    ```bash
-   cd "Netflix For Desktop"
+   setup.bat
    ```
 
 3. Build the application:
@@ -77,6 +78,8 @@ Netflix For Desktop/
 ├── MainWindow.xaml          # Main window UI
 ├── MainWindow.xaml.cs       # Main window logic
 ├── NetflixForDesktop.csproj # Project file
+├── setup.bat                # Downloads uBlock Origin for ad blocking
+├── UBlock/                  # uBlock Origin extension (created by setup.bat)
 ├── images/                  # Application icons
 └── font/                    # Custom fonts
 ```
@@ -102,7 +105,6 @@ HKEY_CURRENT_USER\SOFTWARE\NetflixForDesktop
 ### Settings Include:
 - Hardware acceleration preferences
 - Window state and position
-- Discord RPC integration settings
 
 ## 🎮 Discord Integration
 
@@ -113,6 +115,7 @@ The app automatically shows your Netflix activity on Discord:
 
 ## 🔒 Security & Privacy
 
+- **Built-in Ad Blocker** - uBlock Origin runs natively inside the app, no browser extension needed
 - **Domain Allowlist** - Only allows Netflix, Google auth, and CDN domains
 - **Content Security Policy** - Blocks unauthorized external content
 - **Local Storage** - Settings stored locally on your machine

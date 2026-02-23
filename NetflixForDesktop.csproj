@@ -42,4 +42,9 @@
     <Resource Include="images\nobgicon.png" />
   </ItemGroup>
 
+  <!-- Copy uBlock Origin extension to output -->
+  <ItemGroup>
+    <None Include="UBlock\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="UBlock" />
+  </ItemGroup>
+
 </Project>

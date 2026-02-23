@@ -145,12 +145,14 @@ public partial class MainWindow : Window
 
             var options = new CoreWebView2EnvironmentOptions
             {
-                AdditionalBrowserArguments = GetBrowserArguments()
+                AdditionalBrowserArguments = GetBrowserArguments(),
+                AreBrowserExtensionsEnabled = true
             };
             var env = await CoreWebView2Environment.CreateAsync(userDataFolder: userData, options: options);
             await Web.EnsureCoreWebView2Async(env);
 
             SetupWebView2();
+            await LoadAdBlockerExtension();
             UpdateToggleAppearance(); // Set initial appearance based on loaded setting
             UpdateDiscordPresence("Browsing Netflix", "Just started watching");
 
@@ -266,7 +268,7 @@ public partial class MainWindow : Window
             var uri = new Uri(args.Uri);
             var host = uri.Host.ToLower();
             
-            // Allow Netflix domains and auth/CDN domains
+            // Allow Netflix domains, auth/CDN domains, and uBlock extension domains
             var allowedDomains = new[]
             {
                 "netflix.com",
@@ -279,7 +281,9 @@ public partial class MainWindow : Window
                 "codex.nflxext.com"
             };
             
-            bool isAllowed = allowedDomains.Any(domain => host == domain || host.EndsWith("." + domain));
+            // Allow extension-internal URLs (extension:// scheme)
+            bool isExtensionUrl = uri.Scheme == "extension" || uri.Scheme == "chrome-extension";
+            bool isAllowed = isExtensionUrl || allowedDomains.Any(domain => host == domain || host.EndsWith("." + domain));
             
             if (!isAllowed)
             {
@@ -572,6 +576,27 @@ public partial class MainWindow : Window
         catch { }
     }
     
+    private async Task LoadAdBlockerExtension()
+    {
+        try
+        {
+            var extensionPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UBlock");
+            if (System.IO.Directory.Exists(extensionPath))
+            {
+                await Web.CoreWebView2.Profile.AddBrowserExtensionAsync(extensionPath);
+                Console.WriteLine("uBlock Origin loaded successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"uBlock Origin extension not found at: {extensionPath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to load uBlock Origin: {ex.Message}");
+        }
+    }
+
     // Auto-update functionality temporarily removed for .NET 8 compatibility
     // Will be re-implemented with a modern update solution in future version
     
